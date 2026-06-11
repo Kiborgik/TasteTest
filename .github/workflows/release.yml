@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Lune
+        run: |
+          curl -fsSL -o lune.zip https://github.com/lune-org/lune/releases/download/v0.10.4/lune-0.10.4-linux-x86_64.zip
+          unzip -o lune.zip
+          chmod +x lune
+
+      - name: Run tests
+        run: ./lune run Tests/RunInLune.luau
+
+      - name: Build model file
+        run: ./lune run Tools/BuildRbxm.luau
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" TasteTest.rbxm --title "$GITHUB_REF_NAME" --generate-notes
