@@ -15,7 +15,9 @@ local task = require("@lune/task")
 -- Entry-level warn capture for the warning gate. This must live HERE, not
 -- inside the framework: in Lune, global writes from a required module are
 -- invisible to other files, so only the entry script can install a warn
--- override that spec code will actually hit.
+-- override that spec code will actually hit. Capture-only, no passthrough:
+-- the gate summary below reports everything, so a clean run prints no raw
+-- WARN blocks (the dogfood warning otherwise looks like a problem).
 local capturedWarnings = {}
 local realWarn = warn
 warn = function(...)
@@ -24,7 +26,6 @@ warn = function(...)
         parts[i] = tostring(select(i, ...))
     end
     table.insert(capturedWarnings, table.concat(parts, " "))
-    realWarn(...)
 end
 
 local TasteTest = require("../Start")
@@ -61,18 +62,38 @@ for _, failure in ipairs(verdict.failures) do
     print(("FAIL %s\n  %s"):format(failure.path, tostring(failure.error)))
 end
 
-if #verdict.warnings > 0 then
-    for _, w in ipairs(verdict.warnings) do
-        print("WARN (registration) " .. tostring(w))
-    end
+print(("warning gate: %d captured, %d allowlisted, %d unexpected"):format(
+    #verdict.capturedWarnings, #verdict.expectedWarnings, #verdict.unexpectedWarnings))
+
+for _, w in ipairs(verdict.unexpectedWarnings) do
+    print("UNEXPECTED WARNING: " .. tostring(w))
 end
 
-if verdict.unexpectedWarnings and #verdict.unexpectedWarnings > 0 then
-    for _, w in ipairs(verdict.unexpectedWarnings) do
-        print("WARN (unexpected) " .. tostring(w))
+-- Registration warnings the suite produces on purpose; anything else in the
+-- channel is a spec-authoring problem and fails the run.
+local EXPECTED_REGISTRATION = {
+    "it.each: name template", -- bad-template fixture in EachAndMatchers.spec
+}
+local fixtureRegistration, strayRegistration = 0, false
+for _, w in ipairs(verdict.warnings) do
+    local known = false
+    for _, pattern in ipairs(EXPECTED_REGISTRATION) do
+        if string.find(w, pattern, 1, true) then
+            known = true
+            break
+        end
+    end
+    if known then
+        fixtureRegistration += 1
+    else
+        strayRegistration = true
+        print("UNEXPECTED REGISTRATION WARNING: " .. tostring(w))
     end
 end
+if fixtureRegistration > 0 then
+    print(("registration warnings from deliberate test fixtures: %d (expected)"):format(fixtureRegistration))
+end
 
-if not verdict.ok then
+if not verdict.ok or strayRegistration then
     process.exit(1)
 end
