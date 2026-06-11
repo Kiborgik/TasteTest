@@ -20,7 +20,9 @@ local OUTPUT = "TasteTest.rbxm"
 local function moduleFromFile(path, name)
     local mod = Instance.new("ModuleScript")
     mod.Name = name
-    mod.Source = fs.readFile(path)
+    -- Normalize CRLF so a build from a Windows working tree is byte-identical
+    -- to a CI build from a fresh LF checkout (.gitattributes pins LF).
+    mod.Source = fs.readFile(path):gsub("\r\n", "\n")
     return mod
 end
 
