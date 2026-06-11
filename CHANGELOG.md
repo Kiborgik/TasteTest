@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 (2026-06-11)
+
+- `GUIDE.luau`: the agent guide now also ships inside the place as a ModuleScript, so Studio's built-in Assistant (which sees instances, not repository files) can be told "Read ReplicatedStorage.TasteTest.GUIDE and follow it" and write correct specs. Condensed from SKILL.md; the two are kept in sync per CONTRIBUTING.
+- The model build normalizes line endings, so a build from a Windows working tree is byte-identical to a CI build, and `Tools/VerifyRelease.luau` compares a downloaded release artifact against a local build module by module.
+
 ## 0.2.0 (2026-06-10)
 
 - Release packaging: `Tools/BuildRbxm.luau` builds `TasteTest.rbxm` (framework plus test suite) with byte-for-byte round-trip verification, and a tag-triggered workflow runs the suite, builds the model, and attaches it to a GitHub release. README gained the CI badge, a Studio-only install path via the release artifact, and a section showing real failure output.

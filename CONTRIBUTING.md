@@ -39,7 +39,7 @@ Tests must be deterministic: nothing timing-dependent, no raw `math.random`, no 
 
 Plain Luau, four-space indent, LF line endings (enforced through `.gitattributes`). Write comments only where they capture a constraint the code itself cannot show. Keep user-facing error messages in ASCII, and include the name of the matcher or function that produced them.
 
-When public behavior changes, update `README.md`, the matching file under `references/`, `SKILL.md` if the recipe changed, and the Unreleased section of `CHANGELOG.md`. Code examples in the docs should stay copy-paste runnable.
+When public behavior changes, update `README.md`, the matching file under `references/`, `SKILL.md` if the recipe changed, and the Unreleased section of `CHANGELOG.md`. `GUIDE.luau` is the in-place condensed twin of SKILL.md for Studio assistants; an edit to one usually needs a matching edit in the other. Code examples in the docs should stay copy-paste runnable.
 
 ## Pull requests and releases
 

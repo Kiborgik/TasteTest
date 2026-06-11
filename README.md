@@ -281,7 +281,15 @@ Escape hatches: raw assignment and `pairs()` iteration bypass the strict read ch
 
 ## For AI agents
 
-[SKILL.md](SKILL.md) is an agent-facing guide in the Agent Skills format: the spec recipe, run recipes for both runtimes, verdict interpretation, and the most common mistakes. Claude Code users can copy or symlink the folder under `.claude/skills/tastetest/`. The `references/` folder holds the detailed API docs it links to ([matchers](references/matchers.md), [spies and fixtures](references/spies-and-fixtures.md), [debugging](references/debugging.md)); they double as the human reference documentation.
+Which entry point an agent needs depends on where it lives:
+
+**Studio's built-in Assistant** (or any AI working inside the place) cannot read repository files, so the install includes the guide as a ModuleScript: `ReplicatedStorage.TasteTest.GUIDE`. Start a session with a prompt like:
+
+> Read ReplicatedStorage.TasteTest.GUIDE and follow it. Then write TasteTest specs for ReplicatedStorage.MyModules.Inventory and run them.
+
+The Assistant reads the spec recipe, the matcher list, and the known mistakes from the module, writes the `.spec` files next to your code, and runs the suite from the command bar.
+
+**Filesystem agents** (Claude Code, Cursor, and similar) get [SKILL.md](SKILL.md), an agent-facing guide in the Agent Skills format: the spec recipe, run recipes for both runtimes, verdict interpretation, and the most common mistakes. Claude Code users can copy or symlink the folder under `.claude/skills/tastetest/`. The `references/` folder holds the detailed API docs it links to ([matchers](references/matchers.md), [spies and fixtures](references/spies-and-fixtures.md), [debugging](references/debugging.md)); they double as the human reference documentation.
 
 ## Testing the framework itself
 
@@ -296,6 +304,7 @@ TasteTest/
   matchers.luau     expect(), matcher registry, failure diffs
   spy.luau          call recorder
   strictTable.luau  strict fixture factory
+  GUIDE.luau        in-place agent guide for Studio assistants
   SKILL.md          agent-facing guide (Agent Skills format)
   references/       detailed API and debugging docs
   Tests/            the framework's own specs (+ RunInLune.luau entry)

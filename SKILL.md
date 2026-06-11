@@ -5,7 +5,7 @@ description: Write and run unit tests for Roblox Luau code with the TasteTest fr
 
 # Testing with TasteTest
 
-TasteTest is a zero-dependency Jest-style test framework for Luau. It lives as a single folder (usually `ReplicatedStorage.TasteTest`) and works without Rojo, Wally, or any other toolchain. This file covers the recipe for writing and running specs; the `references/` folder has the full API when you need details beyond the recipe.
+TasteTest is a zero-dependency Jest-style test framework for Luau. It lives as a single folder (usually `ReplicatedStorage.TasteTest`) and works without Rojo, Wally, or any other toolchain. This file covers the recipe for writing and running specs; the `references/` folder has the full API when you need details beyond the recipe. A condensed copy of this guide also ships inside the place as the `GUIDE` ModuleScript, for assistants that can only see instances; keep the two in sync when editing either.
 
 ## Writing a spec
 
